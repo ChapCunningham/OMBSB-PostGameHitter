@@ -108,7 +108,8 @@ st.table(plate_appearances_df)
 # Add strike zone plots
 st.markdown("### Pitches and Results")
 strike_zone_width = 17 / 12  # 1.41667 feet
-strike_zone_params = {'x_start': -strike_zone_width / 2, 'y_start': 1.5, 'width': strike_zone_width, 'height': 3.3775 - 1.5}
+strike_zone_height = 3.3775 - 1.5
+strike_zone_params = {'x_start': -strike_zone_width / 2, 'y_start': 1.5, 'width': strike_zone_width, 'height': strike_zone_height}
 
 pitch_call_markers = {
     "StrikeCalled": ("red", "D"),
@@ -128,6 +129,7 @@ if len(plate_appearance_groups) == 1:
     axes = [axes]  # Ensure axes is iterable
 
 for ax, (pa_number, pa_data) in zip(axes, plate_appearance_groups):
+    ax.set_aspect('equal')  # Maintain true strike zone proportions
     ax.set_xlim([-1.5, 1.5])  # Widen horizontal space
     ax.set_ylim([1.2, 3.7])  # Adjusted to maintain the strike zone size
     ax.add_patch(Rectangle((strike_zone_params['x_start'], strike_zone_params['y_start']),
