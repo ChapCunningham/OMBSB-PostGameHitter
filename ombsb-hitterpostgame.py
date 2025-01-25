@@ -172,7 +172,7 @@ legend_elements = [
 ]
 fig.legend(handles=legend_elements, loc="lower center", ncol=5, fontsize=10)
 
-st.pyplot(fig
+st.pyplot(fig)
 
 
 
