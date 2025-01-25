@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Load the CSV data
-file_path = 'WINTER_ALL_trackman.csv'
+file_path = 'Spring Intrasquads MASTER.csv'
 data = pd.read_csv(file_path, low_memory=False)
 
 # Streamlit app
