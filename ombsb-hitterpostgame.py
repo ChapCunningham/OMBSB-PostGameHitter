@@ -79,10 +79,10 @@ for pa_number, pa_data in enumerate(plate_appearance_groups, start=1):
     # Last pitch data
     last_pitch = pa_rows.iloc[-1]
     pitch = last_pitch['TaggedPitchType'] if pd.notnull(last_pitch['TaggedPitchType']) else "NA"
-    pitch_speed = last_pitch['RelSpeed'] if pd.notnull(last_pitch['RelSpeed']) else "NA"
-    ev = last_pitch['ExitSpeed'] if pd.notnull(last_pitch['ExitSpeed']) else "NA"
-    la = last_pitch['Angle'] if pd.notnull(last_pitch['Angle']) else "NA"
-    distance = last_pitch['Distance'] if pd.notnull(last_pitch['Distance']) else "NA"
+    pitch_speed = round(last_pitch['RelSpeed'], 1) if pd.notnull(last_pitch['RelSpeed']) else "NA"
+    ev = round(last_pitch['ExitSpeed'], 1) if pd.notnull(last_pitch['ExitSpeed']) else "NA"
+    la = round(last_pitch['Angle'], 1) if pd.notnull(last_pitch['Angle']) else "NA"
+    distance = round(last_pitch['Distance'], 1) if pd.notnull(last_pitch['Distance']) else "NA"
 
     plate_appearances.append([pa_number, inning, pitcher, result, runs, pitch, pitch_speed, ev, la, distance])
 
