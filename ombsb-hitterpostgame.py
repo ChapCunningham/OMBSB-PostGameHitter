@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+import numpy as np
 
 # Load the CSV data
 file_path = 'Spring Intrasquads MASTER.csv'
