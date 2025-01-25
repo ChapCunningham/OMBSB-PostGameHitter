@@ -128,7 +128,7 @@ if len(plate_appearance_groups) == 1:
     axes = [axes]  # Ensure axes is iterable
 
 for ax, (pa_number, pa_data) in zip(axes, plate_appearance_groups):
-    ax.set_xlim([-1, 1])
+    ax.set_xlim([-1.5, 1.5])  # Widen horizontal space
     ax.set_ylim([1, 4])
     ax.add_patch(Rectangle((strike_zone_params['x_start'], strike_zone_params['y_start']),
                            strike_zone_params['width'], strike_zone_params['height'],
@@ -148,8 +148,8 @@ for ax, (pa_number, pa_data) in zip(axes, plate_appearance_groups):
         else:
             color, marker = pitch_call_markers.get(pitch_call, ("gray", "o"))
 
-        ax.scatter(plate_loc_side, plate_loc_height, color=color, marker=marker, s=150)
-        ax.text(plate_loc_side, plate_loc_height, str(pitch_of_pa), color="white", fontsize=10, ha="center", va="center")
+        ax.scatter(plate_loc_side, plate_loc_height, color=color, marker=marker, s=200)  # Increase size
+        ax.text(plate_loc_side, plate_loc_height - 0.1, str(pitch_of_pa), color="white", fontsize=12, fontweight="bold", ha="center", va="center")  # Shift and bold text
 
     ax.set_xticks([])
     ax.set_yticks([])
