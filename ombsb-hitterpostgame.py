@@ -183,7 +183,7 @@ st.markdown("### Pitch Types in the Strike Zone")
 # Define pitch type colors and markers
 pitch_type_colors = {
     "Fastball": "blue",
-    "Sinker": "yellow",
+    "Sinker": "gold",
     "ChangeUp": "purple",
     "Slider": "green",
     "Cutter": "lime",
