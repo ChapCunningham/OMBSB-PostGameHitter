@@ -261,7 +261,21 @@ foul_y_right = [RF_foul_pole * np.cos(np.radians(45)), 0]
 ax.plot(foul_x_left, foul_y_left, color="black", linestyle="-")
 ax.plot(foul_x_right, foul_y_right, color="black", linestyle="-")
 
+# Draw the infield
+infield_side = 90
+bases_x = [0, infield_side, 0, -infield_side, 0]
+bases_y = [0, infield_side, 2 * infield_side, infield_side, 0]
+ax.plot(bases_x, bases_y, color="brown", linewidth=2)
+
 # Plot batted ball locations with PA numbers and ExitSpeed
+play_result_styles = {
+    "Single": ("blue", "o"),
+    "Double": ("purple", "o"),
+    "Triple": ("gold", "o"),
+    "HomeRun": ("orange", "o"),
+    "Out": ("black", "o"),
+}
+
 for pa_number, pa_data in plate_appearance_groups:
     if pa_data.empty:
         continue
@@ -276,13 +290,6 @@ for pa_number, pa_data in plate_appearance_groups:
     y = distance * np.cos(bearing)
 
     # Get play result style
-    play_result_styles = {
-        "Single": ("blue", "o"),
-        "Double": ("purple", "o"),
-        "Triple": ("gold", "o"),
-        "HomeRun": ("orange", "o"),
-        "Out": ("black", "o"),
-    }
     color, marker = play_result_styles.get(play_result, ("black", "o"))
 
     # Plot the hit location
@@ -305,6 +312,19 @@ ax.set_xlabel("")
 ax.set_ylabel("")
 ax.axis("equal")
 ax.set_title(f"Batted Ball Locations for {batter_name} (InPlay)", fontsize=16)
+
+# Add legend for PlayResults
+legend_elements = [
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="blue", markersize=10, label="Single"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="purple", markersize=10, label="Double"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="gold", markersize=10, label="Triple"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="orange", markersize=10, label="HomeRun"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="black", markersize=10, label="Out"),
+]
+fig.legend(handles=legend_elements, loc="lower center", ncol=5, fontsize=10, frameon=False)
+
+# Adjust layout to make room for the legend
+plt.subplots_adjust(bottom=0.15)
 
 # Display the plot in Streamlit
 st.pyplot(fig)
