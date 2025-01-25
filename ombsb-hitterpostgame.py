@@ -133,9 +133,8 @@ for ax, (pa_number, pa_data) in zip(axes, plate_appearance_groups):
     ax.add_patch(Rectangle((strike_zone_params['x_start'], strike_zone_params['y_start']),
                            strike_zone_params['width'], strike_zone_params['height'],
                            fill=False, color="black", lw=2))
-    ax.set_title(f"PA {pa_number}")
-    ax.set_xlabel("PlateLocSide")
-    ax.set_ylabel("PlateLocHeight")
+    pitcher = pa_data['Pitcher'].iloc[0] if not pa_data['Pitcher'].isnull().all() else "Unknown"
+    ax.set_title(f"PA {pa_number} vs {pitcher}")
 
     for _, pitch in pa_data.iterrows():
         pitch_of_pa = int(pitch['PitchofPA'])
@@ -149,8 +148,27 @@ for ax, (pa_number, pa_data) in zip(axes, plate_appearance_groups):
         else:
             color, marker = pitch_call_markers.get(pitch_call, ("gray", "o"))
 
-        ax.scatter(plate_loc_side, plate_loc_height, color=color, marker=marker, s=100)
-        ax.text(plate_loc_side, plate_loc_height, str(pitch_of_pa), color="white", fontsize=8, ha="center", va="center")
+        ax.scatter(plate_loc_side, plate_loc_height, color=color, marker=marker, s=150)
+        ax.text(plate_loc_side, plate_loc_height, str(pitch_of_pa), color="white", fontsize=10, ha="center", va="center")
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+
+# Add legend
+legend_elements = [
+    plt.Line2D([0], [0], marker="D", color="w", markerfacecolor="red", markersize=10, label="Strike Called"),
+    plt.Line2D([0], [0], marker="s", color="w", markerfacecolor="red", markersize=10, label="Strike Swinging"),
+    plt.Line2D([0], [0], marker="s", color="w", markerfacecolor="green", markersize=10, label="Ball Called"),
+    plt.Line2D([0], [0], marker="^", color="w", markerfacecolor="pink", markersize=10, label="Foul Ball"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="black", markersize=10, label="Out"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="blue", markersize=10, label="Single"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="purple", markersize=10, label="Double"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="yellow", markersize=10, label="Triple"),
+    plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="orange", markersize=10, label="Home Run")
+]
+fig.legend(handles=legend_elements, loc="lower center", ncol=5, fontsize=10)
 
 st.pyplot(fig)
 
