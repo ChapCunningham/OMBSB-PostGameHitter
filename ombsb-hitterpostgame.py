@@ -130,8 +130,8 @@ if len(plate_appearance_groups) == 1:
 
 for ax, (pa_number, pa_data) in zip(axes, plate_appearance_groups):
     ax.set_aspect('equal')  # Maintain true strike zone proportions
-    ax.set_xlim([-1.5, 1.5])  # Widen horizontal space
-    ax.set_ylim([1.2, 3.7])  # Adjusted to maintain the strike zone size
+    ax.set_xlim([-2, 2])  # Widen horizontal space
+    ax.set_ylim([1, 3.9])  # Adjusted to maintain the strike zone size
     ax.add_patch(Rectangle((strike_zone_params['x_start'], strike_zone_params['y_start']),
                            strike_zone_params['width'], strike_zone_params['height'],
                            fill=False, color="black", lw=2))
