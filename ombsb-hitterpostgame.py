@@ -120,7 +120,7 @@ pitch_call_markers = {
     "Out": ("black", "o"),
     "Single": ("blue", "o"),
     "Double": ("purple", "o"),
-    "Triple": ("yellow", "o"),
+    "Triple": ("gold", "o"),
     "HomeRun": ("orange", "o")
 }
 
