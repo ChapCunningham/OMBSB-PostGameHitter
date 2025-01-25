@@ -88,6 +88,11 @@ for pa_number, pa_data in enumerate(plate_appearance_groups, start=1):
 
 plate_appearances_df = pd.DataFrame(plate_appearances, columns=["PA #", "Inning", "Pitcher", "Result", "Runs", "Pitch", "PitchSpeed", "EV", "LA", "Distance"])
 
+# Ensure all numerical values are rounded to one decimal place in the plate appearances table
+numerical_columns = ["PitchSpeed", "EV", "LA", "Distance"]
+for col in numerical_columns:
+    plate_appearances_df[col] = pd.to_numeric(plate_appearances_df[col], errors='coerce').round(1)
+
 # Streamlit layout
 st.title(f"Post-Game Hitter Report: {batter_name}")
 st.subheader(f"Date: {selected_date}")
