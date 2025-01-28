@@ -73,11 +73,16 @@ if not filtered_data.empty:
     axes = []
     for i in range(min(num_pa, 9)):
         ax = fig.add_subplot(gs[i // 3, i % 3])
+        ax.set_xlim(-1.5, 1.5)  # Ensuring the same x-limits for consistency
+        ax.set_ylim(1, 4)  # Ensuring the same y-limits
+        ax.set_xticks([])  # Remove ticks
+        ax.set_yticks([])
+        ax.set_aspect(1)  # Maintain square aspect ratio
         axes.append(ax)
 
     table_data = []
 
-    # Adjusted strike zone and "Heart" of the zone parameters
+    # Strike zone and "Heart" of the zone parameters
     strike_zone_width = 17 / 12  # 1.41667 feet
     strike_zone_params = {'x_start': -strike_zone_width / 2, 'y_start': 1.5, 'width': strike_zone_width, 'height': 3.3775 - 1.5}
     heart_zone_params = {
@@ -87,43 +92,34 @@ if not filtered_data.empty:
         'height': strike_zone_params['height'] * 0.5
     }
 
-    # Shadow zone parameters
-    shadow_zone_width = strike_zone_width + 0.245  # Extend by 0.83083 feet
-    shadow_zone_params = {'x_start': -shadow_zone_width / 2, 'y_start': 1.37750, 'width': shadow_zone_width, 'height': 3.5000 - 1.37750}
+    shadow_zone_params = {'x_start': -strike_zone_width / 2 - 0.2, 'y_start': 1.3, 'width': strike_zone_width + 0.4, 'height': 3.6 - 1.3}
 
     for i, (pa_id, pa_data) in enumerate(plate_appearance_groups, start=1):
         if i > 9:
             break
 
         ax = axes[i - 1]
-        ax.set_aspect(1)
 
-        # Determine the handedness and pitcher's name
+        # Pitcher Information
         pitcher_throws = pa_data.iloc[0]['PitcherThrows']
         handedness_label = 'RHP' if pitcher_throws == 'Right' else 'LHP'
         pitcher_name = pa_data.iloc[0]['Pitcher']
 
-        # Add the PA number and handedness label above each plot
         ax.set_title(f'PA {i} vs {handedness_label}', fontsize=12, fontweight='bold')
         ax.text(0.5, -0.12, f'P: {pitcher_name}', fontsize=10, fontstyle='italic', ha='center', transform=ax.transAxes)
 
         pa_rows = []
 
-        # Draw the zones
-        shadow_zone = plt.Rectangle((shadow_zone_params['x_start'], shadow_zone_params['y_start']),
-                                     shadow_zone_params['width'], shadow_zone_params['height'],
-                                     fill=False, color='gray', linestyle='--', linewidth=2, zorder=1)
-        ax.add_patch(shadow_zone)
-
-        strike_zone = plt.Rectangle((strike_zone_params['x_start'], strike_zone_params['y_start']),
-                                     strike_zone_params['width'], strike_zone_params['height'],
-                                     fill=False, color='black', linewidth=2, zorder=1)
-        ax.add_patch(strike_zone)
-
-        heart_zone = plt.Rectangle((heart_zone_params['x_start'], heart_zone_params['y_start']),
-                                    heart_zone_params['width'], heart_zone_params['height'],
-                                    fill=False, color='red', linestyle='--', linewidth=2, zorder=1)
-        ax.add_patch(heart_zone)
+        # Draw strike zone and shadow zone
+        ax.add_patch(plt.Rectangle((shadow_zone_params['x_start'], shadow_zone_params['y_start']),
+                                   shadow_zone_params['width'], shadow_zone_params['height'],
+                                   fill=False, color='gray', linestyle='--', linewidth=2))
+        ax.add_patch(plt.Rectangle((strike_zone_params['x_start'], strike_zone_params['y_start']),
+                                   strike_zone_params['width'], strike_zone_params['height'],
+                                   fill=False, color='black', linewidth=2))
+        ax.add_patch(plt.Rectangle((heart_zone_params['x_start'], heart_zone_params['y_start']),
+                                   heart_zone_params['width'], heart_zone_params['height'],
+                                   fill=False, color='red', linestyle='--', linewidth=2))
 
         for _, row in pa_data.iterrows():
             sns.scatterplot(
@@ -134,12 +130,10 @@ if not filtered_data.empty:
                 marker=pitch_type_markers.get(row['TaggedPitchType'], 'o'),
                 s=150,
                 legend=False,
-                ax=ax,
-                zorder=2
+                ax=ax
             )
-            # Label each pitch with its number in the plate appearance
             ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
-                    color='white', fontsize=8, ha='center', va='center', weight='bold', zorder=3)
+                    color='white', fontsize=8, ha='center', va='center', weight='bold')
 
             pitch_speed = f"{round(row['RelSpeed'], 1)} MPH"
             pitch_type = row['TaggedPitchType']
