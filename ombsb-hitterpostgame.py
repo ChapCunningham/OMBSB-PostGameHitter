@@ -146,6 +146,7 @@ if not filtered_data.empty:
         table_data.extend(pa_rows)
 
         # Add legends
+# Add legends
 legend_ax = fig.add_subplot(gs[2, :2])  # Place legends in the bottom-left area
 legend_ax.axis('off')
 
@@ -166,19 +167,20 @@ ax_table.axis('off')
 y_position = 1.0
 x_position = 0.05
 for row in table_data:
-        if 'PA' in row[0]:  # Highlight plate appearances
+    if 'PA' in row[0]:  # Highlight plate appearances
         ax_table.text(x_position, y_position, f'{row[0]}', fontsize=10, fontweight='bold', fontstyle='italic')
         ax_table.axhline(y=y_position - 0.01, color='black', linewidth=1)  # Add a separator line
         y_position -= 0.05
-        else:  # Add pitch details
+    else:  # Add pitch details
         text_str = f"  {row[0]}  |  {row[1]}  |  {row[2]}"
         ax_table.text(x_position, y_position, text_str, fontsize=7)  # Adjusted font size for better fit
         y_position -= 0.04  # Adjusted spacing for better fit
 
 # Add the Ole Miss logo in the top right corner
-    logo_ax = fig.add_axes([0.78, 0.92, 0.08, 0.08], anchor='NE', zorder=1)
-    logo_ax.imshow(logo_img)
-    logo_ax.axis('off')  # Turn off the axis
+logo_ax = fig.add_axes([0.78, 0.92, 0.08, 0.08], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off')  # Turn off the axis
+
 
 
     # Display the plot in Streamlit
