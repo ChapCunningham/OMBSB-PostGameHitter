@@ -188,13 +188,22 @@ else:
 
 
 
-# Add a rotate button for the batted ball distribution graphic
-st.markdown("### Batted Ball Locations")
+# Initialize session state for rotation
+if "rotate_180" not in st.session_state:
+    st.session_state.rotate_180 = False  # Start in the normal orientation
 
-# Add a button to toggle rotation
-rotate_180 = st.button("Rotate 180°")
+# Add buttons for rotation and reset
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("Rotate 180°"):
+        st.session_state.rotate_180 = not st.session_state.rotate_180  # Toggle rotation
+with col2:
+    if st.button("Reset"):
+        st.session_state.rotate_180 = False  # Reset to normal orientation
 
 # Generate the batted ball graphic
+st.markdown("### Batted Ball Locations")
+
 fig, ax = plt.subplots(figsize=(10, 10))
 
 # Draw the outfield fence
@@ -208,8 +217,8 @@ distances = np.interp(angles, [-45, -30, 0, 30, 45], [LF_foul_pole, LC_gap, CF, 
 x_outfield = distances * np.sin(np.radians(angles))
 y_outfield = distances * np.cos(np.radians(angles))
 
-# Rotate the graphic if the button is clicked
-if rotate_180:
+# Rotate the graphic if session state is rotated
+if st.session_state.rotate_180:
     x_outfield, y_outfield = -x_outfield, -y_outfield
 
 ax.plot(x_outfield, y_outfield, color="black", linewidth=2)
@@ -220,7 +229,7 @@ foul_y_left = [LF_foul_pole * np.cos(np.radians(45)), 0]
 foul_x_right = [RF_foul_pole * np.sin(np.radians(45)), 0]
 foul_y_right = [RF_foul_pole * np.cos(np.radians(45)), 0]
 
-if rotate_180:
+if st.session_state.rotate_180:
     foul_x_left, foul_y_left = [-x for x in foul_x_left], [-y for y in foul_y_left]
     foul_x_right, foul_y_right = [-x for x in foul_x_right], [-y for y in foul_y_right]
 
@@ -232,7 +241,7 @@ infield_side = 90
 bases_x = [0, infield_side, 0, -infield_side, 0]
 bases_y = [0, infield_side, 2 * infield_side, infield_side, 0]
 
-if rotate_180:
+if st.session_state.rotate_180:
     bases_x, bases_y = [-x for x in bases_x], [-y for y in bases_y]
 
 ax.plot(bases_x, bases_y, color="brown", linewidth=2)
@@ -259,7 +268,7 @@ for pa_number, pa_data in plate_appearance_groups:
     x = distance * np.sin(bearing)
     y = distance * np.cos(bearing)
 
-    if rotate_180:
+    if st.session_state.rotate_180:
         x, y = -x, -y
 
     # Get play result style
@@ -272,11 +281,18 @@ for pa_number, pa_data in plate_appearance_groups:
     ax.text(x, y, str(pa_number), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
 
     # Add ExitSpeed below the plot
-    ax.text(
-        x, y - 15,  # Adjust y-coordinate to position below
-        f"{exit_speed} mph" if exit_speed != "NA" else "NA",
-        color="red", fontsize=8, fontweight="bold", ha="center",
-    )
+    if not st.session_state.rotate_180:
+        ax.text(
+            x, y - 15,  # Adjust y-coordinate to position below
+            f"{exit_speed} mph" if exit_speed != "NA" else "NA",
+            color="red", fontsize=8, fontweight="bold", ha="center",
+        )
+    else:
+        ax.text(
+            x, y + 15,  # Adjust y-coordinate to position above (flipped)
+            f"{exit_speed} mph" if exit_speed != "NA" else "NA",
+            color="red", fontsize=8, fontweight="bold", ha="center",
+        )
 
 # Remove axis labels and ticks
 ax.set_xticks([])
@@ -284,7 +300,12 @@ ax.set_yticks([])
 ax.set_xlabel("")
 ax.set_ylabel("")
 ax.axis("equal")
-ax.set_title(f"Batted Ball Locations for {selected_batter} (InPlay)", fontsize=16)
+
+# Flip the title text if rotated
+if st.session_state.rotate_180:
+    ax.set_title(f"Batted Ball Locations for {selected_batter} (InPlay)", fontsize=16, rotation=180, va="bottom")
+else:
+    ax.set_title(f"Batted Ball Locations for {selected_batter} (InPlay)", fontsize=16)
 
 # Add legend for PlayResults
 legend_elements = [
@@ -301,5 +322,6 @@ plt.subplots_adjust(bottom=0.15)
 
 # Display the plot in Streamlit
 st.pyplot(fig)
+
 
 
