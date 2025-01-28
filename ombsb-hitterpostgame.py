@@ -16,6 +16,10 @@ logo_img = mpimg.imread(logo_path)
 # Standardize TaggedPitchType values to ensure consistency
 data['TaggedPitchType'] = data['TaggedPitchType'].str.strip().str.capitalize()
 
+# Ensure the 'Date' column is standardized to a single format (YYYY-MM-DD)
+if 'Date' in data.columns:
+    data['Date'] = pd.to_datetime(data['Date'], errors='coerce').dt.strftime('%Y-%m-%d')
+
 # Define color palette for PitchCall
 pitch_call_palette = {
     'StrikeCalled': 'orange',
