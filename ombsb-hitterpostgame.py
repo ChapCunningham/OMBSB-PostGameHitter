@@ -181,9 +181,9 @@ logo_ax = fig.add_axes([0.78, 0.92, 0.08, 0.08], anchor='NE', zorder=1)
 logo_ax.imshow(logo_img)
 logo_ax.axis('off')  # Turn off the axis
 
-
-
-    # Display the plot in Streamlit
+# Display the plot in Streamlit
 st.pyplot(fig)
+
+# Else block for handling empty data
 else:
     st.write("No data available for the selected filters.")
