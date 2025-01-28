@@ -163,8 +163,8 @@ legend_ax.add_artist(legend1)
 ax_table = fig.add_subplot(gs[:, 3:])  # Use the last column for the table
 ax_table.axis('off')
 
-    y_position = 1.0
-    x_position = 0.05
+y_position = 1.0
+x_position = 0.05
     for row in table_data:
         if 'PA' in row[0]:  # Highlight plate appearances
         ax_table.text(x_position, y_position, f'{row[0]}', fontsize=10, fontweight='bold', fontstyle='italic')
