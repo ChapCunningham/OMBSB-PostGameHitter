@@ -1,99 +1,124 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
-from matplotlib.gridspec import GridSpec
-import matplotlib.image as mpimg
 
 # Load the CSV data
 file_path = 'Spring Intrasquads MASTER.csv'
 data = pd.read_csv(file_path, low_memory=False)
 
-# Convert necessary columns to numeric in case they were loaded as strings
-data["Distance"] = pd.to_numeric(data["Distance"], errors="coerce")
-data["ExitSpeed"] = pd.to_numeric(data["ExitSpeed"], errors="coerce")
-data["Bearing"] = pd.to_numeric(data["Bearing"], errors="coerce")
-
-# Load the Ole Miss logo
-logo_path = 'OMBaseballLogo.jpeg'
-logo_img = mpimg.imread(logo_path)
-
-# Streamlit app configuration
+# Streamlit app
 st.set_page_config(page_title="Post-Game Hitter Report", layout="centered")
 
-# Sidebar for selecting date and batter
+# Sidebar for selecting date
 selected_date = st.sidebar.selectbox("Select a Date", data['Date'].unique())
 data_by_date = data[data['Date'] == selected_date]
 
+# Sidebar for selecting batter
 batter_name = st.sidebar.selectbox("Select a Batter", data_by_date['Batter'].unique())
+
+# Filter data for the selected batter
 batter_data = data_by_date[data_by_date['Batter'] == batter_name]
 
-# Group data by plate appearances
-plate_appearance_groups = batter_data.groupby((batter_data['PitchofPA'] == 1).cumsum())
+# Check if data is available
+if batter_data.empty:
+    st.write("No data available for the selected date and batter.")
+else:
+    # Create the batted ball field graphic
+    st.markdown("### Batted Ball Locations")
 
-# --------------------------- BATTED BALL FIELD GRAPHIC ---------------------------
-st.markdown("### Batted Ball Locations")
+    fig, ax = plt.subplots(figsize=(10, 10))
 
-fig, ax = plt.subplots(figsize=(10, 10))
+    # Define the field dimensions
+    LF_foul_pole = 330
+    LC_gap = 365
+    CF = 390
+    RC_gap = 365
+    RF_foul_pole = 330
 
-# Draw the outfield fence
-LF_foul_pole, LC_gap, CF, RC_gap, RF_foul_pole = 330, 365, 390, 365, 330
-angles = np.linspace(-45, 45, 500)
-distances = np.interp(angles, [-45, -30, 0, 30, 45], [LF_foul_pole, LC_gap, CF, RC_gap, RF_foul_pole])
-x_outfield = distances * np.sin(np.radians(angles))
-y_outfield = distances * np.cos(np.radians(angles))
-ax.plot(x_outfield, y_outfield, color="black", linewidth=2)
+    # Create the outfield fence
+    angles = np.linspace(-45, 45, 500)
+    distances = np.interp(angles, [-45, -30, 0, 30, 45], [LF_foul_pole, LC_gap, CF, RC_gap, RF_foul_pole])
+    x_outfield = distances * np.sin(np.radians(angles))
+    y_outfield = distances * np.cos(np.radians(angles))
+    ax.plot(x_outfield, y_outfield, color="black", linewidth=2)
 
-# Draw the foul lines
-ax.plot([-LF_foul_pole * np.sin(np.radians(45)), 0], [LF_foul_pole * np.cos(np.radians(45)), 0], color="black")
-ax.plot([RF_foul_pole * np.sin(np.radians(45)), 0], [RF_foul_pole * np.cos(np.radians(45)), 0], color="black")
+    # Draw the foul lines
+    foul_x_left = [-LF_foul_pole * np.sin(np.radians(45)), 0]
+    foul_y_left = [LF_foul_pole * np.cos(np.radians(45)), 0]
+    foul_x_right = [RF_foul_pole * np.sin(np.radians(45)), 0]
+    foul_y_right = [RF_foul_pole * np.cos(np.radians(45)), 0]
+    ax.plot(foul_x_left, foul_y_left, color="black", linestyle="-")
+    ax.plot(foul_x_right, foul_y_right, color="black", linestyle="-")
 
-# Draw the infield
-infield_side = 90
-ax.plot([0, infield_side, 0, -infield_side, 0], [0, infield_side, 2 * infield_side, infield_side, 0], color="brown", linewidth=2)
+    # Draw the infield
+    infield_side = 90
+    bases_x = [0, infield_side, 0, -infield_side, 0]
+    bases_y = [0, infield_side, 2 * infield_side, infield_side, 0]
+    ax.plot(bases_x, bases_y, color="brown", linewidth=2)
 
-# Plot batted ball locations
-play_result_styles = {
-    "Single": ("blue", "o"),
-    "Double": ("purple", "o"),
-    "Triple": ("gold", "o"),
-    "HomeRun": ("orange", "o"),
-    "Out": ("black", "o"),
-}
+    # Define PlayResult styles
+    play_result_styles = {
+        "Single": ("blue", "o"),
+        "Double": ("purple", "o"),
+        "Triple": ("gold", "o"),
+        "HomeRun": ("orange", "o"),
+        "Out": ("black", "o"),
+    }
 
-for pa_number, pa_data in plate_appearance_groups:
-    if pa_data.empty:
-        continue
-    last_pitch = pa_data.iloc[-1]
-    
-    # Ensure numerical values are properly converted
-    bearing = np.radians(float(last_pitch["Bearing"])) if not pd.isna(last_pitch["Bearing"]) else 0
-    distance = float(last_pitch["Distance"]) if not pd.isna(last_pitch["Distance"]) else 0
-    exit_speed = round(float(last_pitch["ExitSpeed"]), 1) if not pd.isna(last_pitch["ExitSpeed"]) else "NA"
-    play_result = last_pitch["PlayResult"]
-    
-    # Convert polar to Cartesian coordinates
-    x, y = distance * np.sin(bearing), distance * np.cos(bearing)
-    color, marker = play_result_styles.get(play_result, ("black", "o"))
-    
-    ax.scatter(x, y, color=color, marker=marker, s=150, edgecolor="black")
-    ax.text(x, y, str(pa_number), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
-    ax.text(x, y - 15, f"{exit_speed} mph" if exit_speed != "NA" else "NA", color="red", fontsize=8, fontweight="bold", ha="center")
+    # Iterate through batted ball data
+    for _, row in batter_data.iterrows():
+        if pd.isna(row["Bearing"]) or pd.isna(row["Distance"]):
+            continue
 
-ax.set_xticks([])
-ax.set_yticks([])
-ax.axis("equal")
-ax.set_title(f"Batted Ball Locations for {batter_name}", fontsize=16)
+        bearing = np.radians(float(row["Bearing"]))
+        distance = float(row["Distance"])
+        exit_speed = round(float(row["ExitSpeed"]), 1) if pd.notnull(row["ExitSpeed"]) else "NA"
+        play_result = row["PlayResult"]
 
-# Add legend
-legend_elements = [plt.Line2D([0], [0], marker="o", color="w", markerfacecolor=color, markersize=10, label=label)
-                   for label, color in play_result_styles.items()]
-fig.legend(handles=legend_elements, loc="lower center", ncol=5, fontsize=10, frameon=False)
-plt.subplots_adjust(bottom=0.15)
+        # Convert polar to Cartesian coordinates
+        x = distance * np.sin(bearing)
+        y = distance * np.cos(bearing)
 
-# Display field plot
-st.pyplot(fig)
+        # Get play result style
+        color, marker = play_result_styles.get(play_result, ("black", "o"))
 
-st.markdown("---")
-st.markdown("*Generated by Post-Game Hitter Report App*")
+        # Plot the hit location
+        ax.scatter(x, y, color=color, marker=marker, s=150, edgecolor="black")
+
+        # Add PA number in bold white
+        ax.text(x, y, str(row["PitchofPA"]), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
+
+        # Add ExitSpeed below the plot
+        ax.text(
+            x, y - 15,
+            f"{exit_speed} mph" if exit_speed != "NA" else "NA",
+            color="red", fontsize=8, fontweight="bold", ha="center",
+        )
+
+    # Remove axis labels and ticks
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+    ax.axis("equal")
+    ax.set_title(f"Batted Ball Locations for {batter_name} (InPlay)", fontsize=16)
+
+    # Add legend for PlayResults
+    legend_elements = [
+        plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="blue", markersize=10, label="Single"),
+        plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="purple", markersize=10, label="Double"),
+        plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="gold", markersize=10, label="Triple"),
+        plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="orange", markersize=10, label="HomeRun"),
+        plt.Line2D([0], [0], marker="o", color="w", markerfacecolor="black", markersize=10, label="Out"),
+    ]
+    fig.legend(handles=legend_elements, loc="lower center", ncol=5, fontsize=10, frameon=False)
+
+    # Adjust layout to make room for the legend
+    plt.subplots_adjust(bottom=0.15)
+
+    # Display the plot in Streamlit
+    st.pyplot(fig)
+
+    st.markdown("---")
+    st.markdown("*Generated by Post-Game Hitter Report App*")
