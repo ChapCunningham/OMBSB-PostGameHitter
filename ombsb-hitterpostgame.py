@@ -135,26 +135,27 @@ if not filtered_data.empty:
             ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
                     color='white', fontsize=8, ha='center', va='center', weight='bold')
 
-    # Add Legends
-    legend_ax = fig.add_subplot(gs[2, :2])
-    legend_ax.axis('off')
+            pitch_speed = f"{round(row['RelSpeed'], 1)} MPH"
+            pitch_type = row['TaggedPitchType']
+            final_outcome = row['PitchCall'] if pd.isna(row['PlayResult']) else row['PlayResult']
 
-    # Pitch Call Legend
-    handles1 = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=6, linestyle='', label=label)
-                for label, color in pitch_call_palette.items()]
-    legend1 = legend_ax.legend(handles=handles1, title='Pitch Call', loc='lower left', fontsize=10, title_fontsize=12)
+            # Add rows to table
+            pa_rows.append([f"Pitch {int(row['PitchofPA'])}", f"{pitch_speed} {pitch_type}", final_outcome])
 
-    # Pitch Type Legend
-    handles2 = [plt.Line2D([0], [0], marker=marker, color='black', markersize=6, linestyle='', label=label)
-                for label, marker in pitch_type_markers.items()]
-    legend2 = legend_ax.legend(handles=handles2, title='Pitch Type', loc='lower left', bbox_to_anchor=(0.6, -0.3), fontsize=10, title_fontsize=12)
+        table_data.append([f'PA {i}', '', ''])
+        table_data.extend(pa_rows)
 
-    legend_ax.add_artist(legend1)
+    # Add the pitch-by-pitch table
+    ax_table = fig.add_subplot(gs[:, 3:])
+    ax_table.axis('off')
 
-    # Add logo
-    logo_ax = fig.add_axes([0.78, 0.92, 0.1, 0.1])
-    logo_ax.imshow(logo_img)
-    logo_ax.axis('off')
+    y_position = 1.0
+    for row in table_data:
+        if 'PA' in row[0]:
+            ax_table.text(0, y_position, f"{row[0]}", fontsize=10, fontweight='bold', fontstyle='italic')
+        else:
+            ax_table.text(0, y_position, f"{row[0]} | {row[1]} | {row[2]}", fontsize=8)
+        y_position -= 0.05
 
     # Display the plot in Streamlit
     st.pyplot(fig)
