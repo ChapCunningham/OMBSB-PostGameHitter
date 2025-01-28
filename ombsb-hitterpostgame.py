@@ -6,7 +6,7 @@ from matplotlib.gridspec import GridSpec
 import matplotlib.image as mpimg
 
 # Load the CSV data
-file_path = 'Spring Master CSV - Spring Intrasquads MASTER.csv'
+file_path = 'Spring Intrasquads MASTER.csv'
 data = pd.read_csv(file_path, low_memory=False)
 
 # Load the Ole Miss logo
@@ -18,7 +18,10 @@ data['TaggedPitchType'] = data['TaggedPitchType'].str.strip().str.capitalize()
 
 # Ensure the 'Date' column is standardized to a single format (YYYY-MM-DD)
 if 'Date' in data.columns:
-    data['Date'] = pd.to_datetime(data['Date'], errors='coerce').dt.strftime('%Y-%m-%d')
+    # Convert to datetime and drop rows with invalid dates
+    data['Date'] = pd.to_datetime(data['Date'], errors='coerce')  # Convert dates to datetime format
+    data = data.dropna(subset=['Date'])  # Drop rows where 'Date' is NaT
+    data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')  # Format to string (YYYY-MM-DD)
 
 # Define color palette for PitchCall
 pitch_call_palette = {
@@ -45,8 +48,8 @@ pitch_type_markers = {
 st.title("Hitting Summary Viewer")
 
 # Filters
-unique_dates = data['Date'].unique() if 'Date' in data.columns else []
-unique_batters = data['Batter'].unique()
+unique_dates = sorted(data['Date'].unique()) if 'Date' in data.columns else []
+unique_batters = sorted(data['Batter'].unique())
 
 selected_date = st.selectbox("Select a Date", options=unique_dates) if unique_dates else None
 selected_batter = st.selectbox("Select a Batter", options=unique_batters)
