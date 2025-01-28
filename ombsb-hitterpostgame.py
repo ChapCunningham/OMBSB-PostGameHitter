@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.gridspec import GridSpec
 import matplotlib.image as mpimg
+import numpy as np
 
 # Load the CSV data
 file_path = 'Spring Master CSV - Spring Intrasquads MASTER.csv'
