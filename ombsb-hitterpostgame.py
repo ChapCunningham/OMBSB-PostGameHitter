@@ -160,8 +160,8 @@ legend2 = legend_ax.legend(handles=handles2, title='Pitch Type', loc='lower left
 legend_ax.add_artist(legend1)
 
 # Add the pitch-by-pitch table
-    ax_table = fig.add_subplot(gs[:, 3:])  # Use the last column for the table
-    ax_table.axis('off')
+ax_table = fig.add_subplot(gs[:, 3:])  # Use the last column for the table
+ax_table.axis('off')
 
     y_position = 1.0
     x_position = 0.05
