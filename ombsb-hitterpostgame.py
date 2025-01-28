@@ -188,9 +188,11 @@ else:
 
 
 
+
+
 # Initialize session state for rotation
 if "rotate_180" not in st.session_state:
-    st.session_state.rotate_180 = False  # Start in the normal orientation
+    st.session_state.rotate_180 = False  # Start in normal orientation
 
 # Add buttons for rotation and reset
 col1, col2 = st.columns(2)
@@ -277,25 +279,23 @@ for pa_number, pa_data in plate_appearance_groups:
     # Plot the hit location
     ax.scatter(x, y, color=color, marker=marker, s=150, edgecolor="black")
 
-    # Add PA number in bold white
-    if st.session_state.rotate_180:
-        ax.text(-x, -y, str(pa_number), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
-    else:
-        ax.text(x, y, str(pa_number), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
+    # Flip PA number **visually** by rotating it in place
+    pa_rotation = 180 if st.session_state.rotate_180 else 0
+    ax.text(
+        x, y, str(pa_number), 
+        color="white", fontsize=10, fontweight="bold", ha="center", va="center",
+        rotation=pa_rotation, transform=ax.transData
+    )
 
-    # Add ExitSpeed text, flipped if necessary
-    if st.session_state.rotate_180:
-        ax.text(
-            -x, -y + 15,  # Adjust y-coordinate above when flipped
-            f"{exit_speed} mph" if exit_speed != "NA" else "NA",
-            color="red", fontsize=8, fontweight="bold", ha="center",
-        )
-    else:
-        ax.text(
-            x, y - 15,  # Adjust y-coordinate below normally
-            f"{exit_speed} mph" if exit_speed != "NA" else "NA",
-            color="red", fontsize=8, fontweight="bold", ha="center",
-        )
+    # Flip Exit Speed text by rotating it in place
+    ev_y_offset = 15 if not st.session_state.rotate_180 else -15
+    ev_rotation = 180 if st.session_state.rotate_180 else 0
+    ax.text(
+        x, y - ev_y_offset, 
+        f"{exit_speed} mph" if exit_speed != "NA" else "NA",
+        color="red", fontsize=8, fontweight="bold", ha="center",
+        rotation=ev_rotation, transform=ax.transData
+    )
 
 # Remove axis labels and ticks
 ax.set_xticks([])
@@ -305,10 +305,8 @@ ax.set_ylabel("")
 ax.axis("equal")
 
 # Flip the title text if rotated
-if st.session_state.rotate_180:
-    ax.set_title(f"Batted Ball Locations for {selected_batter} (InPlay)", fontsize=16, rotation=180, va="bottom")
-else:
-    ax.set_title(f"Batted Ball Locations for {selected_batter} (InPlay)", fontsize=16)
+title_rotation = 180 if st.session_state.rotate_180 else 0
+ax.set_title(f"Batted Ball Locations for {selected_batter} (InPlay)", fontsize=16, rotation=title_rotation, va="bottom")
 
 # Add legend for PlayResults
 legend_elements = [
@@ -325,7 +323,6 @@ plt.subplots_adjust(bottom=0.15)
 
 # Display the plot in Streamlit
 st.pyplot(fig)
-
 
 
 
