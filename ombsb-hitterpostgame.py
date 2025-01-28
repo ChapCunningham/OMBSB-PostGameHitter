@@ -188,9 +188,13 @@ else:
 
 
 
-# Add batted ball distribution graphic
+# Add a rotate button for the batted ball distribution graphic
 st.markdown("### Batted Ball Locations")
 
+# Add a button to toggle rotation
+rotate_180 = st.button("Rotate 180°")
+
+# Generate the batted ball graphic
 fig, ax = plt.subplots(figsize=(10, 10))
 
 # Draw the outfield fence
@@ -203,6 +207,11 @@ angles = np.linspace(-45, 45, 500)
 distances = np.interp(angles, [-45, -30, 0, 30, 45], [LF_foul_pole, LC_gap, CF, RC_gap, RF_foul_pole])
 x_outfield = distances * np.sin(np.radians(angles))
 y_outfield = distances * np.cos(np.radians(angles))
+
+# Rotate the graphic if the button is clicked
+if rotate_180:
+    x_outfield, y_outfield = -x_outfield, -y_outfield
+
 ax.plot(x_outfield, y_outfield, color="black", linewidth=2)
 
 # Draw the foul lines
@@ -210,6 +219,11 @@ foul_x_left = [-LF_foul_pole * np.sin(np.radians(45)), 0]
 foul_y_left = [LF_foul_pole * np.cos(np.radians(45)), 0]
 foul_x_right = [RF_foul_pole * np.sin(np.radians(45)), 0]
 foul_y_right = [RF_foul_pole * np.cos(np.radians(45)), 0]
+
+if rotate_180:
+    foul_x_left, foul_y_left = [-x for x in foul_x_left], [-y for y in foul_y_left]
+    foul_x_right, foul_y_right = [-x for x in foul_x_right], [-y for y in foul_y_right]
+
 ax.plot(foul_x_left, foul_y_left, color="black", linestyle="-")
 ax.plot(foul_x_right, foul_y_right, color="black", linestyle="-")
 
@@ -217,6 +231,10 @@ ax.plot(foul_x_right, foul_y_right, color="black", linestyle="-")
 infield_side = 90
 bases_x = [0, infield_side, 0, -infield_side, 0]
 bases_y = [0, infield_side, 2 * infield_side, infield_side, 0]
+
+if rotate_180:
+    bases_x, bases_y = [-x for x in bases_x], [-y for y in bases_y]
+
 ax.plot(bases_x, bases_y, color="brown", linewidth=2)
 
 # Plot batted ball locations with PA numbers and ExitSpeed
@@ -227,6 +245,7 @@ play_result_styles = {
     "HomeRun": ("orange", "o"),
     "Out": ("black", "o"),
 }
+
 for pa_number, pa_data in plate_appearance_groups:
     if pa_data.empty:
         continue
@@ -239,6 +258,9 @@ for pa_number, pa_data in plate_appearance_groups:
     # Convert polar to Cartesian coordinates
     x = distance * np.sin(bearing)
     y = distance * np.cos(bearing)
+
+    if rotate_180:
+        x, y = -x, -y
 
     # Get play result style
     color, marker = play_result_styles.get(play_result, ("black", "o"))
@@ -279,4 +301,5 @@ plt.subplots_adjust(bottom=0.15)
 
 # Display the plot in Streamlit
 st.pyplot(fig)
+
 
