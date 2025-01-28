@@ -185,5 +185,5 @@ logo_ax.axis('off')  # Turn off the axis
 st.pyplot(fig)
 
 # Else block for handling empty data
-else:
-    st.write("No data available for the selected filters.")
+    else:
+        st.write("No data available for the selected filters.")
