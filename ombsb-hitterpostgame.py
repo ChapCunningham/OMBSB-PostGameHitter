@@ -165,7 +165,7 @@ ax_table.axis('off')
 
 y_position = 1.0
 x_position = 0.05
-    for row in table_data:
+for row in table_data:
         if 'PA' in row[0]:  # Highlight plate appearances
         ax_table.text(x_position, y_position, f'{row[0]}', fontsize=10, fontweight='bold', fontstyle='italic')
         ax_table.axhline(y=y_position - 0.01, color='black', linewidth=1)  # Add a separator line
