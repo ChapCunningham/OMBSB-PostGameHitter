@@ -185,5 +185,5 @@ logo_ax.axis('off')  # Turn off the axis
 
     # Display the plot in Streamlit
 st.pyplot(fig)
-    else:
+else:
     st.write("No data available for the selected filters.")
