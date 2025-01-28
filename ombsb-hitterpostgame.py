@@ -6,7 +6,7 @@ from matplotlib.gridspec import GridSpec
 import matplotlib.image as mpimg
 
 # Load the CSV data
-file_path = 'Spring Intrasquads MASTER.csv'
+file_path = 'Spring Master CSV - Spring Intrasquads MASTER.csv'
 data = pd.read_csv(file_path, low_memory=False)
 
 # Load the Ole Miss logo
