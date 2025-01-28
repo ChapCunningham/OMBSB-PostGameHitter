@@ -145,24 +145,41 @@ if not filtered_data.empty:
         table_data.append([f'PA {i}', '', ''])
         table_data.extend(pa_rows)
 
-    # Add legends
-    legend_ax = fig.add_subplot(gs[2, :2])
-    legend_ax.axis('off')
+        # Add legends
+legend_ax = fig.add_subplot(gs[2, :2])  # Place legends in the bottom-left area
+legend_ax.axis('off')
 
-    handles1 = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=6, linestyle='', label=label)
-                for label, color in pitch_call_palette.items()]
-    legend1 = legend_ax.legend(handles=handles1, title='Pitch Call', loc='lower left', bbox_to_anchor=(-0.05, -0.3), fontsize=10, title_fontsize=12)
+handles1 = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=6, linestyle='', label=label)
+            for label, color in pitch_call_palette.items()]
+legend1 = legend_ax.legend(handles=handles1, title='Pitch Call', loc='lower left', bbox_to_anchor=(-0.05, -0.3), fontsize=10, title_fontsize=12)
 
-    handles2 = [plt.Line2D([0], [0], marker=marker, color='black', markersize=6, linestyle='', label=label)
-                for label, marker in pitch_type_markers.items()]
-    legend2 = legend_ax.legend(handles=handles2, title='Pitch Type', loc='lower left', bbox_to_anchor=(0.6, -0.3), fontsize=10, title_fontsize=12)
+handles2 = [plt.Line2D([0], [0], marker=marker, color='black', markersize=6, linestyle='', label=label)
+            for label, marker in pitch_type_markers.items()]
+legend2 = legend_ax.legend(handles=handles2, title='Pitch Type', loc='lower left', bbox_to_anchor=(0.6, -0.3), fontsize=10, title_fontsize=12)
 
-    legend_ax.add_artist(legend1)
+legend_ax.add_artist(legend1)
 
-    # Add Ole Miss logo
-    logo_ax = fig.add_axes([0.78, 0.92, 0.08, 0.08], anchor='NE', zorder=1)
-    logo_ax.imshow(logo_img)
-    logo_ax.axis('off')  # Turn off the axis
+# Add the pitch-by-pitch table
+ax_table = fig.add_subplot(gs[:, 3:])  # Use the last column for the table
+ax_table.axis('off')
+
+y_position = 1.0
+x_position = 0.05
+for row in table_data:
+    if 'PA' in row[0]:  # Highlight plate appearances
+        ax_table.text(x_position, y_position, f'{row[0]}', fontsize=10, fontweight='bold', fontstyle='italic')
+        ax_table.axhline(y=y_position - 0.01, color='black', linewidth=1)  # Add a separator line
+        y_position -= 0.05
+    else:  # Add pitch details
+        text_str = f"  {row[0]}  |  {row[1]}  |  {row[2]}"
+        ax_table.text(x_position, y_position, text_str, fontsize=7)  # Adjusted font size for better fit
+        y_position -= 0.04  # Adjusted spacing for better fit
+
+# Add the Ole Miss logo in the top right corner
+logo_ax = fig.add_axes([0.78, 0.92, 0.08, 0.08], anchor='NE', zorder=1)
+logo_ax.imshow(logo_img)
+logo_ax.axis('off')  # Turn off the axis
+
 
     # Display the plot in Streamlit
     st.pyplot(fig)
