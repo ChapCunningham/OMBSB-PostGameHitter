@@ -6,11 +6,11 @@ from matplotlib.gridspec import GridSpec
 import matplotlib.image as mpimg
 
 # Load the CSV data
-file_path = '/Users/chap/Documents/pybaseball Projects/pybaseball/College DATA/Ole Miss 2024-2025/Fall CSVs/1-21-25 LBP.csv'
+file_path = 'Spring Intrasquads MASTER.csv'
 data = pd.read_csv(file_path, low_memory=False)
 
 # Load the Ole Miss logo
-logo_path = '/Users/chap/Documents/pybaseball Projects/pybaseball/College DATA/OMBaseballLogo.jpeg'
+logo_path = 'OMBaseballLogo.jpeg'
 logo_img = mpimg.imread(logo_path)
 
 # Standardize TaggedPitchType values to ensure consistency
