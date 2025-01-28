@@ -246,7 +246,7 @@ if st.session_state.rotate_180:
 
 ax.plot(bases_x, bases_y, color="brown", linewidth=2)
 
-# Plot batted ball locations with PA numbers and ExitSpeed
+# Plot batted ball locations with PA numbers and Exit Speed
 play_result_styles = {
     "Single": ("blue", "o"),
     "Double": ("purple", "o"),
@@ -278,18 +278,21 @@ for pa_number, pa_data in plate_appearance_groups:
     ax.scatter(x, y, color=color, marker=marker, s=150, edgecolor="black")
 
     # Add PA number in bold white
-    ax.text(x, y, str(pa_number), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
+    if st.session_state.rotate_180:
+        ax.text(-x, -y, str(pa_number), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
+    else:
+        ax.text(x, y, str(pa_number), color="white", fontsize=10, fontweight="bold", ha="center", va="center")
 
-    # Add ExitSpeed below the plot
-    if not st.session_state.rotate_180:
+    # Add ExitSpeed text, flipped if necessary
+    if st.session_state.rotate_180:
         ax.text(
-            x, y - 15,  # Adjust y-coordinate to position below
+            -x, -y + 15,  # Adjust y-coordinate above when flipped
             f"{exit_speed} mph" if exit_speed != "NA" else "NA",
             color="red", fontsize=8, fontweight="bold", ha="center",
         )
     else:
         ax.text(
-            x, y + 15,  # Adjust y-coordinate to position above (flipped)
+            x, y - 15,  # Adjust y-coordinate below normally
             f"{exit_speed} mph" if exit_speed != "NA" else "NA",
             color="red", fontsize=8, fontweight="bold", ha="center",
         )
@@ -322,6 +325,7 @@ plt.subplots_adjust(bottom=0.15)
 
 # Display the plot in Streamlit
 st.pyplot(fig)
+
 
 
 
