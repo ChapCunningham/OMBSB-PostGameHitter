@@ -16,12 +16,11 @@ logo_img = mpimg.imread(logo_path)
 # Standardize TaggedPitchType values to ensure consistency
 data['TaggedPitchType'] = data['TaggedPitchType'].str.strip().str.capitalize()
 
-# Ensure the 'Date' column is standardized to a single format (YYYY-MM-DD)
+# Ensure the 'Date' column is standardized to a single format (YYYY-MM-DD) and drop invalid rows
 if 'Date' in data.columns:
-    # Convert to datetime and drop rows with invalid dates
-    data['Date'] = pd.to_datetime(data['Date'], errors='coerce')  # Convert dates to datetime format
-    data = data.dropna(subset=['Date'])  # Drop rows where 'Date' is NaT
-    data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')  # Format to string (YYYY-MM-DD)
+    data['Date'] = pd.to_datetime(data['Date'], errors='coerce')
+    data = data.dropna(subset=['Date'])
+    data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')
 
 # Define color palette for PitchCall
 pitch_call_palette = {
@@ -99,9 +98,18 @@ if not filtered_data.empty:
         ax = axes[i - 1]
         ax.set_aspect(1)
 
-        ax.set_title(f'PA {i}', fontsize=12, fontweight='bold')
+        # Determine the handedness and pitcher's name
+        pitcher_throws = pa_data.iloc[0]['PitcherThrows']
+        handedness_label = 'RHP' if pitcher_throws == 'Right' else 'LHP'
+        pitcher_name = pa_data.iloc[0]['Pitcher']
 
-        # Draw the strike zone and "Heart"
+        # Add the PA number and handedness label above each plot
+        ax.set_title(f'PA {i} vs {handedness_label}', fontsize=12, fontweight='bold')
+        ax.text(0.5, -0.12, f'P: {pitcher_name}', fontsize=10, fontstyle='italic', ha='center', transform=ax.transAxes)
+
+        pa_rows = []
+
+        # Draw the zones
         shadow_zone = plt.Rectangle((shadow_zone_params['x_start'], shadow_zone_params['y_start']),
                                      shadow_zone_params['width'], shadow_zone_params['height'],
                                      fill=False, color='gray', linestyle='--', linewidth=2, zorder=1)
@@ -129,12 +137,36 @@ if not filtered_data.empty:
                 ax=ax,
                 zorder=2
             )
+            # Label each pitch with its number in the plate appearance
+            ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
+                    color='white', fontsize=8, ha='center', va='center', weight='bold', zorder=3)
 
-        ax.grid(False)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.set_xlim(-2, 2)
-        ax.set_ylim(1, 4)
+            pitch_speed = f"{round(row['RelSpeed'], 1)} MPH"
+            pitch_type = row['TaggedPitchType']
+            final_outcome = row['PitchCall'] if pd.isna(row['PlayResult']) else row['PlayResult']
+
+            # Add rows to table
+            pa_rows.append([f"Pitch {int(row['PitchofPA'])}", f"{pitch_speed} {pitch_type}", final_outcome])
+
+        table_data.append([f'PA {i}', '', ''])
+        table_data.extend(pa_rows)
+
+    # Add the table of pitch-by-pitch data
+    ax_table = fig.add_subplot(gs[:, 3:])
+    ax_table.axis('off')
+
+    y_position = 1.0
+    for row in table_data:
+        if 'PA' in row[0]:
+            ax_table.text(0, y_position, f"{row[0]}", fontsize=10, fontweight='bold', fontstyle='italic')
+        else:
+            ax_table.text(0, y_position, f"{row[0]} | {row[1]} | {row[2]}", fontsize=8)
+        y_position -= 0.05
+
+    # Add logo
+    logo_ax = fig.add_axes([0.78, 0.92, 0.1, 0.1])
+    logo_ax.imshow(logo_img)
+    logo_ax.axis('off')
 
     # Display the plot in Streamlit
     st.pyplot(fig)
