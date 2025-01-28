@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.gridspec import GridSpec
 import matplotlib.image as mpimg
+import os
 
 # Load the CSV data
 file_path = 'Spring Intrasquads MASTER.csv'
@@ -25,6 +26,27 @@ batter_name = st.sidebar.selectbox("Select a Batter", data_by_date['Batter'].uni
 
 # Filter data for the selected batter
 batter_data = data_by_date[data_by_date['Batter'] == batter_name]
+
+# Define color palette for PitchCall
+pitch_call_palette = {
+    'StrikeCalled': 'orange',
+    'BallCalled': 'green',
+    'Foul': 'tan',
+    'InPlay': 'blue',
+    'FoulBallNotFieldable': 'tan',
+    'StrikeSwinging': 'red',
+    'BallIntentional': 'purple',
+    'FoulBallFieldable':'tan',
+    'HitByPitch': 'lime'
+}
+
+# Define marker styles for TaggedPitchType
+pitch_type_markers = {
+    'Fastball': 'o',
+    'Curveball': 's',
+    'Slider': '^',
+    'Changeup': 'D'
+}
 
 ### HITTING SUMMARY GRAPHIC ###
 def generate_hitting_summary(batter_data):
@@ -70,13 +92,23 @@ def generate_hitting_summary(batter_data):
                                     fill=False, color='black', linewidth=2, zorder=1)
         ax.add_patch(strike_zone)
 
+        # Draw the "Heart" of the zone
+        heart_zone = plt.Rectangle((strike_zone_params['x_start'] + strike_zone_params['width'] * 0.25,
+                                    strike_zone_params['y_start'] + strike_zone_params['height'] * 0.25),
+                                   strike_zone_params['width'] * 0.5,
+                                   strike_zone_params['height'] * 0.5,
+                                   fill=False, color='red', linestyle='--', linewidth=2, zorder=1)
+        ax.add_patch(heart_zone)
+
         for _, row in pa_data.iterrows():
+            marker_size = 250 if row['TaggedPitchType'] == 'Slider' else 150
             sns.scatterplot(
                 x=[row['PlateLocSide']],
                 y=[row['PlateLocHeight']],
-                color='blue',
-                marker='o',
-                s=150,
+                hue=[row['PitchCall']],
+                palette=pitch_call_palette,
+                marker=pitch_type_markers.get(row['TaggedPitchType'], 'o'),
+                s=marker_size,
                 legend=False,
                 ax=ax,
                 zorder=2
