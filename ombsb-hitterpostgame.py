@@ -67,7 +67,7 @@ if not filtered_data.empty:
     num_pa = len(plate_appearance_groups)
 
     # Adjustable scaling factor for graphic size
-    graphic_scale = 1.5  # Adjust this value (1.0 is original size, increase for a bigger graphic)
+    graphic_scale = 1  # Adjust this value (1.0 is original size, increase for a bigger graphic)
 
 # Create the figure with adjustable size
     fig = plt.figure(figsize=(11 * graphic_scale, 8.5 * graphic_scale))  
