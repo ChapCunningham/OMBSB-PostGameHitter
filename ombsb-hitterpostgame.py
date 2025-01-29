@@ -66,7 +66,12 @@ if not filtered_data.empty:
     plate_appearance_groups = filtered_data.groupby((filtered_data['PitchofPA'] == 1).cumsum())
     num_pa = len(plate_appearance_groups)
 
-    fig = plt.figure(figsize=(11, 8.5))  # Adjusted figure size to fit 8x11 paper
+    # Adjustable scaling factor for graphic size
+    graphic_scale = 1.2  # Adjust this value (1.0 is original size, increase for a bigger graphic)
+
+# Create the figure with adjustable size
+    fig = plt.figure(figsize=(11 * graphic_scale, 8.5 * graphic_scale))  
+
     gs = GridSpec(3, 5, figure=fig, width_ratios=[1, 1, 1, 0.75, 1.25], height_ratios=[1, 1, 1])
     gs.update(wspace=0.2, hspace=0.3)  # Increase vertical space slightly
 
