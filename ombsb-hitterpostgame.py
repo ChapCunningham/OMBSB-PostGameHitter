@@ -193,8 +193,7 @@ if not filtered_data.empty:
     logo_ax.imshow(logo_img)
     logo_ax.axis('off')  # Hide the axis
 
-# Display the plot in Streamlit
-    st.pyplot(fig)
+
 
 
     # Display the plot in Streamlit
