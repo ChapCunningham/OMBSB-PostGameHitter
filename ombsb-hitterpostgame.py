@@ -112,8 +112,10 @@ if not filtered_data.empty:
 
         marker_size = 200  # Adjusted for better visibility
         ax.set_title(f'PA {i} vs {handedness_label}', fontsize=14, fontweight='bold')
-        ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
-        color='white', fontsize=10, ha='center', va='center', weight='bold')
+        for _, row in pa_data.iterrows():
+            ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
+                color='white', fontsize=10, ha='center', va='center', weight='bold')
+
 
 
         pa_rows = []
