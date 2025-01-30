@@ -183,11 +183,17 @@ if not filtered_data.empty:
             ax_table.text(x_position, y_position, text_str, fontsize=7)  # Adjusted font size for better fit
             y_position -= 0.04  # Adjusted spacing for better fit
 
-    # Add the Ole Miss logo in the top right corner
-    logo_ax = fig.add_axes([0.80, 0.92, 0.10, 0.10])  # Increase logo size
+    # Add the main title to the figure above the first graphic, aligned with the logo
+    fig.suptitle(f"{selected_batter} Report for {selected_date}", fontsize=18, weight='bold')
 
+    # Add the Ole Miss logo in the top right corner
+    logo_ax = fig.add_axes([0.80, 0.92, 0.10, 0.10])  # Adjusted size for alignment
     logo_ax.imshow(logo_img)
-    logo_ax.axis('off')  # Turn off the axis
+    logo_ax.axis('off')  # Hide the axis
+
+# Display the plot in Streamlit
+    st.pyplot(fig)
+
 
     # Display the plot in Streamlit
     st.pyplot(fig)
