@@ -70,9 +70,9 @@ if not filtered_data.empty:
     graphic_scale = 1  # Adjust this value (1.0 is original size, increase for a bigger graphic)
 
 # Create the figure with adjustable size
-    fig = plt.figure(figsize=(11 * graphic_scale, 8.5 * graphic_scale))  
+    fig = plt.figure(figsize=(15, 8.5)) 
 
-    gs = GridSpec(3, 5, figure=fig, width_ratios=[1, 1, 1, 0.75, 1.25], height_ratios=[1, 1, 1])
+    gs = GridSpec(3, 5, figure=fig, width_ratios=[1.5, 1.5, 1.5, 1, 1.5], height_ratios=[1, 1, 1])
     gs.update(wspace=0.2, hspace=0.3)  # Increase vertical space slightly
 
     # Create small plots in the left half using GridSpec
@@ -110,8 +110,11 @@ if not filtered_data.empty:
         handedness_label = 'RHP' if pitcher_throws == 'Right' else 'LHP'
         pitcher_name = pa_data.iloc[0]['Pitcher']
 
-        ax.set_title(f'PA {i} vs {handedness_label}', fontsize=12, fontweight='bold')
-        ax.text(0.5, -0.12, f'P: {pitcher_name}', fontsize=10, fontstyle='italic', ha='center', transform=ax.transAxes)
+        marker_size = 200  # Adjusted for better visibility
+        ax.set_title(f'PA {i} vs {handedness_label}', fontsize=14, fontweight='bold')
+        ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
+        color='white', fontsize=10, ha='center', va='center', weight='bold')
+
 
         pa_rows = []
 
@@ -181,7 +184,8 @@ if not filtered_data.empty:
             y_position -= 0.04  # Adjusted spacing for better fit
 
     # Add the Ole Miss logo in the top right corner
-    logo_ax = fig.add_axes([0.78, 0.92, 0.08, 0.08], anchor='NE', zorder=1)
+    logo_ax = fig.add_axes([0.80, 0.92, 0.10, 0.10])  # Increase logo size
+
     logo_ax.imshow(logo_img)
     logo_ax.axis('off')  # Turn off the axis
 
