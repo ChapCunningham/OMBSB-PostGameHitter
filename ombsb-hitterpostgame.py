@@ -111,7 +111,12 @@ if not filtered_data.empty:
         pitcher_name = pa_data.iloc[0]['Pitcher']
 
         marker_size = 200  # Adjusted for better visibility
+        # Add the PA number and handedness label above each plot
         ax.set_title(f'PA {i} vs {handedness_label}', fontsize=14, fontweight='bold')
+
+        # Add the opposing Pitcher’s name under the PA graph
+        ax.text(0.5, -0.12, f'P: {pitcher_name}', fontsize=10, fontstyle='italic', ha='center', transform=ax.transAxes)
+
         for _, row in pa_data.iterrows():
             ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
                 color='white', fontsize=10, ha='center', va='center', weight='bold')
