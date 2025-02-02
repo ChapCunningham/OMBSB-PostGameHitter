@@ -227,7 +227,7 @@ with col2:
 # Generate the batted ball graphic
 st.markdown("### Batted Ball Locations")
 
-fig, ax = plt.subplots(figsize=(8, 8))
+fig, ax = plt.subplots(figsize=(6, 6))
 
 # Draw the outfield fence
 LF_foul_pole = 330
