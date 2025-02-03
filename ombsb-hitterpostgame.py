@@ -150,12 +150,28 @@ if not filtered_data.empty:
             ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
                     color='white', fontsize=8, ha='center', va='center', weight='bold')
 
+    
             pitch_speed = f"{round(row['RelSpeed'], 1)} MPH"
             pitch_type = row['TaggedPitchType']
-            final_outcome = row['PitchCall'] if pd.isna(row['PlayResult']) else row['PlayResult']
+    
+    # Extract values for the last pitch
+            if row.name == pa_data.index[-1]:  # Check if it's the last pitch in PA
+                play_result = row['PlayResult']
+                kor_bb_result = row['KorBB']
+                pitch_call = row['PitchCall']
+        
+        # Find the first non-"Undefined" value
+                outcome_x = next(
+                    (result for result in [play_result, kor_bb_result, pitch_call] if result != "Undefined"),
+                    "Undefined"
+        )
+            else:
+                outcome_x = ""  # Empty for non-final pitches in the PA
 
-            # Add rows to table
-            pa_rows.append([f"Pitch {int(row['PitchofPA'])}", f"{pitch_speed} {pitch_type}", final_outcome])
+    # Add row to table data
+            pa_rows.append([f"Pitch {int(row['PitchofPA'])}", f"{pitch_speed} {pitch_type}", outcome_x])
+
+        
 
         table_data.append([f'PA {i}', '', ''])
         table_data.extend(pa_rows)
