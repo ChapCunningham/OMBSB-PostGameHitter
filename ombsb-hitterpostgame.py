@@ -166,7 +166,7 @@ if not filtered_data.empty:
                     "Undefined"
         )
             else:
-                outcome_x = ""  # Empty for non-final pitches in the PA
+                outcome_x = row['PitchCall']  # Empty for non-final pitches in the PA
 
     # Add row to table data
             pa_rows.append([f"Pitch {int(row['PitchofPA'])}", f"{pitch_speed} {pitch_type}", outcome_x])
