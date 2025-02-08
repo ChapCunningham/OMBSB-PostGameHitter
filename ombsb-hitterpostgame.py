@@ -15,7 +15,7 @@ logo_path = 'OMBaseballLogo.jpeg'
 logo_img = mpimg.imread(logo_path)
 
 # Standardize TaggedPitchType values to ensure consistency
-data['TaggedPitchType'] = data['TaggedPitchType'].str.strip().str.capitalize()
+data['AutoPitchType'] = data['AutoPitchType'].str.strip().str.capitalize()
 
 # Ensure the 'Date' column is standardized to a single format (YYYY-MM-DD) and drop invalid rows
 if 'Date' in data.columns:
@@ -142,7 +142,7 @@ if not filtered_data.empty:
                 y=[row['PlateLocHeight']],
                 hue=[row['PitchCall']],
                 palette=pitch_call_palette,
-                marker=pitch_type_markers.get(row['TaggedPitchType'], 'o'),
+                marker=pitch_type_markers.get(row['AutoPitchType'], 'o'),
                 s=150,
                 legend=False,
                 ax=ax
@@ -152,7 +152,7 @@ if not filtered_data.empty:
 
     
             pitch_speed = f"{round(row['RelSpeed'], 1)} MPH"
-            pitch_type = row['TaggedPitchType']
+            pitch_type = row['AutoPitchType']
     
     # Extract values for the last pitch
             if row.name == pa_data.index[-1]:  # Check if it's the last pitch in PA
