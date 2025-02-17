@@ -52,7 +52,13 @@ st.title("Hitting Summary Viewer")
 unique_dates = sorted(data['Date'].unique()) if 'Date' in data.columns else []
 unique_batters = sorted(data['Batter'].unique())
 
-selected_date = st.selectbox("Select a Date", options=unique_dates) if unique_dates else None
+# Automatically select the most recent date upon app launch
+if unique_dates:
+    default_date = max(unique_dates)  # Most recent date
+    selected_date = st.selectbox("Select a Date", options=unique_dates, index=unique_dates.index(default_date))
+else:
+    selected_date = None
+
 selected_batter = st.selectbox("Select a Batter", options=unique_batters)
 
 # Filter data based on user selection
