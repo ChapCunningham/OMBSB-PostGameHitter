@@ -48,9 +48,8 @@ pitch_type_markers = {
 # Streamlit app setup
 st.title("Hitting Summary Viewer")
 
-# Filters
+# Get unique dates for selection
 unique_dates = sorted(data['Date'].unique()) if 'Date' in data.columns else []
-unique_batters = sorted(data['Batter'].unique())
 
 # Automatically select the most recent date upon app launch
 if unique_dates:
@@ -59,7 +58,19 @@ if unique_dates:
 else:
     selected_date = None
 
+# Filter the data based on the selected date first
+filtered_data = data[data['Date'] == selected_date] if selected_date else data
+
+# Get unique batters from the **filtered** data
+unique_batters = sorted(filtered_data['Batter'].unique()) if not filtered_data.empty else []
+
+# Create batter selection dropdown with only available batters
 selected_batter = st.selectbox("Select a Batter", options=unique_batters)
+
+# Filter data further based on selected batter
+if selected_batter:
+    filtered_data = filtered_data[filtered_data['Batter'] == selected_batter]
+
 
 # Filter data based on user selection
 filtered_data = data
