@@ -225,7 +225,7 @@ if not filtered_data.empty:
             y_position -= 0.04  # Adjusted spacing for better fit
 
     # Add the main title to the figure above the first graphic, aligned with the logo
-    fig.suptitle(f"{selected_batter} Report for 3/28/25 vs. Florida (G1)", fontsize=18, weight='bold')
+    fig.suptitle(f"{selected_batter} Report for {selected_date}", fontsize=18, weight='bold')
 
     # Add the Ole Miss logo in the top right corner
     logo_ax = fig.add_axes([0.80, 0.92, 0.10, 0.10])  # Adjusted size for alignment
