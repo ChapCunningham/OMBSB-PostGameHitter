@@ -251,7 +251,7 @@ if not filtered_data.empty:
 
     # --- Add stat line under the title ---
     fig.text(
-        0.5, 0.8, 
+        0.5, 0.93, 
         f"Whiffs: {whiffs}    Hard Hit: {hard_hits}    Barrels: {barrels}    Chase: {chase_count}", 
         fontsize=12, ha = 'center'
     )
