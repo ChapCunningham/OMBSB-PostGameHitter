@@ -227,6 +227,38 @@ if not filtered_data.empty:
     # Add the main title to the figure above the first graphic, aligned with the logo
     fig.suptitle(f"{selected_batter} Report for {selected_date}", fontsize=18, weight='bold')
 
+    # --- Compute Postgame Stats ---
+    whiffs = filtered_data['PitchCall'].eq('StrikeSwinging').sum()
+
+    hard_hits = filtered_data[
+        (filtered_data['PitchCall'] == 'InPlay') & 
+        (filtered_data['ExitSpeed'] >= 95)
+    ].shape[0]
+
+    barrels = filtered_data[
+        (filtered_data['ExitSpeed'] >= 95) & 
+        (filtered_data['Angle'].between(10, 35))
+    ].shape[0]
+
+    swing_calls = ['Foul', 'InPlay', 'StrikeSwinging', 'FoulBallFieldable', 'FoulBallNotFieldable']
+    swings = filtered_data[filtered_data['PitchCall'].isin(swing_calls)]
+
+    chase_swings = swings[
+        (swings['PlateLocSide'] < -0.7083) | (swings['PlateLocSide'] > 0.7083) |
+        (swings['PlateLocHeight'] < 1.5) | (swings['PlateLocHeight'] > 3.3775)
+    ]
+    chase_count = chase_swings.shape[0]
+
+    # --- Add stat line under the title ---
+    fig.text(
+        0.1, 0.91, 
+        f"Whiffs: {whiffs}    Hard Hit: {hard_hits}    Barrels: {barrels}    Chase: {chase_count}", 
+        fontsize=12
+    )
+
+
+
+    
     # Add the Ole Miss logo in the top right corner
     logo_ax = fig.add_axes([0.80, 0.92, 0.10, 0.10])  # Adjusted size for alignment
     logo_ax.imshow(logo_img)
