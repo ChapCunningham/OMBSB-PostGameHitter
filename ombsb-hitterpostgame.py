@@ -28,7 +28,7 @@ if 'Date' in data.columns:
 pitch_call_palette = {
     'StrikeCalled': 'orange',
     'BallCalled': 'green',
-    'BallInDirt': 'green',
+    'BallinDirt': 'green',
     'Foul': 'tan',
     'InPlay': 'blue',
     'FoulBallNotFieldable': 'tan',
