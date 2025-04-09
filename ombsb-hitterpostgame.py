@@ -165,8 +165,9 @@ if not filtered_data.empty:
                 legend=False,
                 ax=ax
             )
-            ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
-                    color='white', fontsize=8, ha='center', va='center', weight='bold')
+            offset = -0.05 if row['AutoPitchType'] == 'Slider' else 0
+            ax.text(row['PlateLocSide'], row['PlateLocHeight'] + offset, f"{int(row['PitchofPA'])}",
+                color='white', fontsize=8, ha='center', va='center', weight='bold')
 
     
             pitch_speed = f"{round(row['RelSpeed'], 1)} MPH"
