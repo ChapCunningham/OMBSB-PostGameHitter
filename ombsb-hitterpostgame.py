@@ -137,8 +137,10 @@ if not filtered_data.empty:
         ax.text(0.5, -0.12, f'P: {pitcher_name}', fontsize=10, fontstyle='italic', ha='center', transform=ax.transAxes)
 
         for _, row in pa_data.iterrows():
-            ax.text(row['PlateLocSide'], row['PlateLocHeight'], f"{int(row['PitchofPA'])}",
-                color='white', fontsize=10, ha='center', va='center', weight='bold')
+            offset = -0.05 if row['AutoPitchType'] == 'Slider' else 0
+            ax.text(row['PlateLocSide'], row['PlateLocHeight'] + offset, f"{int(row['PitchofPA'])}",
+                color='white', fontsize=8, ha='center', va='center', weight='bold')
+
 
 
 
