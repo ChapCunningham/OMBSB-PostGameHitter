@@ -15,8 +15,8 @@ data = data[data['BatterTeam'] == 'OLE_REB']
 logo_path = 'OMBaseballLogo.jpeg'
 logo_img = mpimg.imread(logo_path)
 
-# Standardize TaggedPitchType values to ensure consistency
-data['TaggedPitchType'] = data['TaggedPitchType'].str.strip().str.capitalize()
+# Standardize AutoPitchType values to ensure consistency
+data['AutoPitchType'] = data['AutoPitchType'].str.strip().str.capitalize()
 
 # Ensure the 'Date' column is standardized to a single format (YYYY-MM-DD) and drop invalid rows
 if 'Date' in data.columns:
@@ -38,7 +38,7 @@ pitch_call_palette = {
     'HitByPitch': 'lime'
 }
 
-# Define marker styles for TaggedPitchType
+# Define marker styles for AutoPitchType
 pitch_type_markers = {
     'Fastball': 'o',
     'Curveball': 's',
@@ -160,18 +160,18 @@ if not filtered_data.empty:
                 y=[row['PlateLocHeight']],
                 hue=[row['PitchCall']],
                 palette=pitch_call_palette,
-                marker=pitch_type_markers.get(row['TaggedPitchType'], 'o'),
+                marker=pitch_type_markers.get(row['AutoPitchType'], 'o'),
                 s=150,
                 legend=False,
                 ax=ax
             )
-            offset = -0.05 if row['TaggedPitchType'] == 'Slider' else 0
+            offset = -0.05 if row['AutoPitchType'] == 'Slider' else 0
             ax.text(row['PlateLocSide'], row['PlateLocHeight'] + offset, f"{int(row['PitchofPA'])}",
                 color='white', fontsize=8, ha='center', va='center', weight='bold')
 
     
             pitch_speed = f"{round(row['RelSpeed'], 1)} MPH"
-            pitch_type = row['TaggedPitchType']
+            pitch_type = row['AutoPitchType']
     
     # Extract values for the last pitch
             if row.name == pa_data.index[-1]:  # Check if it's the last pitch in PA
