@@ -47,7 +47,7 @@ pitch_type_markers = {
 }
 
 # Streamlit app setup
-st.title("Hitting Summary Viewer - MSU Game 3 Under Date: 5/11")
+st.title("Hitting Summary Viewer")
 
 # Get unique dates for selection
 unique_dates = sorted(data['Date'].unique()) if 'Date' in data.columns else []
