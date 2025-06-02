@@ -201,11 +201,11 @@ if not filtered_data.empty:
 
     handles1 = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=6, linestyle='', label=label)
                 for label, color in pitch_call_palette.items()]
-    legend1 = legend_ax.legend(handles=handles1, title='Pitch Call', loc='lower left', bbox_to_anchor=(2, -0.3), fontsize=10, title_fontsize=12)
+    legend1 = legend_ax.legend(handles=handles1, title='Pitch Call', loc='lower left', bbox_to_anchor=(1, -0.3), fontsize=10, title_fontsize=12)
 
     handles2 = [plt.Line2D([0], [0], marker=marker, color='black', markersize=6, linestyle='', label=label)
                 for label, marker in pitch_type_markers.items()]
-    legend2 = legend_ax.legend(handles=handles2, title='Pitch Type', loc='lower left', bbox_to_anchor=(2, -0.3), fontsize=10, title_fontsize=12)
+    legend2 = legend_ax.legend(handles=handles2, title='Pitch Type', loc='lower left', bbox_to_anchor=(1, -0.3), fontsize=10, title_fontsize=12)
 
     legend_ax.add_artist(legend1)
 
