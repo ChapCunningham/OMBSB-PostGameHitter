@@ -7,7 +7,7 @@ import matplotlib.image as mpimg
 import numpy as np
 
 # Load the CSV data
-file_path = '2025_SEASON.csv'
+file_path = 'Fall_2025_wRV_with_stuff.csv'
 data = pd.read_csv(file_path, low_memory=False)
 data = data[data['BatterTeam'] == 'OLE_REB']
 
